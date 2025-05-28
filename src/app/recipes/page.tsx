@@ -17,7 +17,7 @@ const RecipesPage = async ({ searchParams }: T_Props) => {
   const params = await searchParams;
 
   const result = await fetchRecipes(params);
-
+  
   return (
     <div className="p-6 max-w-6xl mx-auto">
       <div className="flex justify-between">
@@ -38,7 +38,7 @@ const RecipesPage = async ({ searchParams }: T_Props) => {
               className="bg-white rounded-lg shadow-md hover:shadow-lg transition p-4"
             >
               <Image
-                src={recipe.image}
+                src={recipe.image || '/default.webp'}
                 alt={recipe.title}
                 width={400}
                 height={300}
