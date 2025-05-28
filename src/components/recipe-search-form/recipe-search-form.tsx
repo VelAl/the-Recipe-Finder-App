@@ -28,9 +28,9 @@ export const RecipeSearchForm = () => {
 
   const query = searchParams.get("query") || "";
   const cuisine = searchParams.get("cuisine") || "";
-  const prepTime = searchParams.get("prepTime") || "";
+  const maxReadyTime = searchParams.get("maxReadyTime") || "";
 
-  const updateQueryParam = debounce((key: string, value: string) => {
+  const _updateQueryParam = debounce((key: string, value: string) => {
     const params = new URLSearchParams(searchParams.toString());
 
     if (value) {
@@ -41,6 +41,14 @@ export const RecipeSearchForm = () => {
 
     router.push(`?${params.toString()}`);
   }, 500);
+
+  const _handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const params = new URLSearchParams(searchParams.toString());
+
+    router.push(`/recipes?${params.toString()}`);
+  };
 
   return (
     <Card className="w-full max-w-2xl">
@@ -55,7 +63,7 @@ export const RecipeSearchForm = () => {
       </CardHeader>
 
       <CardContent>
-        <form className="space-y-6">
+        <form className="space-y-6" onSubmit={_handleSubmit}>
           <div className="space-y-2">
             <Label htmlFor="query" className="text-sm font-medium">
               Recipe Query
@@ -68,7 +76,7 @@ export const RecipeSearchForm = () => {
                 placeholder="e.g., pasta, chicken, chocolate cake..."
                 className="pl-10"
                 required
-                onChange={(e) => updateQueryParam("query", e.target.value)}
+                onChange={(e) => _updateQueryParam("query", e.target.value)}
                 defaultValue={query}
               />
             </div>
@@ -81,7 +89,7 @@ export const RecipeSearchForm = () => {
             <Select
               name="cuisine"
               defaultValue={cuisine}
-              onValueChange={(value) => updateQueryParam("cuisine", value)}
+              onValueChange={(value) => _updateQueryParam("cuisine", value)}
             >
               <SelectTrigger id="cuisine" className="w-full">
                 <SelectValue placeholder="Select a cuisine" />
@@ -105,14 +113,14 @@ export const RecipeSearchForm = () => {
               <Clock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
                 id="prep-time"
-                name="prepTime"
+                name="maxReadyTime"
                 type="number"
                 placeholder="30"
                 min="1"
                 max="480"
                 className="pl-10"
-                defaultValue={prepTime || ""}
-                onChange={(e) => updateQueryParam("prepTime", e.target.value)}
+                defaultValue={maxReadyTime || ""}
+                onChange={(e) => _updateQueryParam("maxReadyTime", e.target.value)}
               />
               <span className="absolute right-9 top-1/2 transform -translate-y-1/2 text-sm text-muted-foreground">
                 minutes
@@ -124,7 +132,7 @@ export const RecipeSearchForm = () => {
             type="submit"
             className="w-full"
             size="lg"
-            disabled={!query && !cuisine && !prepTime}
+            disabled={!query && !cuisine && !maxReadyTime}
           >
             <Search className="mr-2 h-4 w-4" />
             Next
