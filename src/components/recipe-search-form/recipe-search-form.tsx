@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -19,8 +20,28 @@ import {
 } from "@/components/ui/select";
 import { Search, Clock, ChefHat } from "lucide-react";
 import { cuisineOptions } from "./helpers";
+import { debounce } from "@/lib/utils";
 
 export const RecipeSearchForm = () => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const query = searchParams.get("query") || "";
+  const cuisine = searchParams.get("cuisine") || "";
+  const prepTime = searchParams.get("prepTime") || "";
+
+  const updateQueryParam = debounce((key: string, value: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+
+    if (value) {
+      params.set(key, value);
+    } else {
+      params.delete(key);
+    }
+
+    router.push(`?${params.toString()}`);
+  }, 500);
+
   return (
     <Card className="w-full max-w-2xl">
       <CardHeader className="text-center">
@@ -47,6 +68,8 @@ export const RecipeSearchForm = () => {
                 placeholder="e.g., pasta, chicken, chocolate cake..."
                 className="pl-10"
                 required
+                onChange={(e) => updateQueryParam("query", e.target.value)}
+                defaultValue={query}
               />
             </div>
           </div>
@@ -55,7 +78,11 @@ export const RecipeSearchForm = () => {
             <Label htmlFor="cuisine" className="text-sm font-medium">
               Cuisine Type
             </Label>
-            <Select name="cuisine">
+            <Select
+              name="cuisine"
+              defaultValue={cuisine}
+              onValueChange={(value) => updateQueryParam("cuisine", value)}
+            >
               <SelectTrigger id="cuisine" className="w-full">
                 <SelectValue placeholder="Select a cuisine" />
               </SelectTrigger>
@@ -84,6 +111,8 @@ export const RecipeSearchForm = () => {
                 min="1"
                 max="480"
                 className="pl-10"
+                defaultValue={prepTime || ""}
+                onChange={(e) => updateQueryParam("prepTime", e.target.value)}
               />
               <span className="absolute right-9 top-1/2 transform -translate-y-1/2 text-sm text-muted-foreground">
                 minutes
@@ -91,7 +120,12 @@ export const RecipeSearchForm = () => {
             </div>
           </div>
 
-          <Button type="submit" className="w-full" size="lg">
+          <Button
+            type="submit"
+            className="w-full"
+            size="lg"
+            disabled={!query && !cuisine && !prepTime}
+          >
             <Search className="mr-2 h-4 w-4" />
             Next
           </Button>
