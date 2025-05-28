@@ -75,7 +75,6 @@ export const RecipeSearchForm = () => {
                 name="query"
                 placeholder="e.g., pasta, chicken, chocolate cake..."
                 className="pl-10"
-                required
                 onChange={(e) => _updateQueryParam("query", e.target.value)}
                 defaultValue={query}
               />
