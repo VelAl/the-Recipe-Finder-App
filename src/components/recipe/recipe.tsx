@@ -1,10 +1,12 @@
 import { T_Recipe } from "@/lib/app-types";
 import Image from "next/image";
 import { Badge } from "../ui/badge";
+import { fetchRecipe } from "@/lib/fetchData";
+import { ErrorMessage } from "../error-message/erro-message";
 
 type T_Props = { recipe: T_Recipe };
 
-export const RecipeCard = ({ recipe }: T_Props) => {
+export const RecipeCard = async ({ recipe }: T_Props) => {
   return (
     <div className="p-6 bg-white rounded-lg shadow-md max-w-4xl mx-auto">
       <h1 className="text-3xl font-bold mb-4">{recipe.title}</h1>
@@ -46,5 +48,16 @@ export const RecipeCard = ({ recipe }: T_Props) => {
         <p className="text-gray-500">No ingredients listed.</p>
       )}
     </div>
+  );
+};
+
+export const SuspensedRecipeCard = async ({ id }: { id: string }) => {
+  await new Promise((r) => setTimeout(r, 2000));
+  const response = await fetchRecipe(id);
+
+  return response.success ? (
+    <RecipeCard recipe={response.data} />
+  ) : (
+    <ErrorMessage message={response.errorMessage} />
   );
 };

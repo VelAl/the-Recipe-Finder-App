@@ -1,3 +1,4 @@
+import { BackHomeButton, ErrorMessage } from "@/components";
 import { fetchRecipes } from "@/lib/fetchData";
 import Image from "next/image";
 import Link from "next/link";
@@ -19,12 +20,15 @@ const RecipesPage = async ({ searchParams }: T_Props) => {
 
   return (
     <div className="p-6 max-w-6xl mx-auto">
-      <h1 className="text-3xl font-bold mb-6">Recipes</h1>
+      <div className="flex justify-between">
+        <BackHomeButton />
+        <h1 className="text-3xl font-bold mb-6">Recipes</h1>
+      </div>
 
       {!result.success ? (
-        <p className="text-red-500">Error: {result.errorMessage}</p>
-      ) : result.data.results.length === 0 ? (
-        <p className="text-gray-500">No recipes found.</p>
+        <ErrorMessage message={result.errorMessage} />
+      ) : !result.data.results.length ? (
+        <div className="text-gray-500 flex-centered bg-muted h-40 rounded-md">No recipes found.</div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
           {result.data.results.map((recipe) => (

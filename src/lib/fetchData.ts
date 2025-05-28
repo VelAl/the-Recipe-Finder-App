@@ -1,6 +1,7 @@
 import { cache } from "react";
 import { T_ApiResponse, T_Recipe, T_RecipeShort } from "./app-types";
 import axiosInstance from "./axios";
+import { normalizeParams } from "./utils";
 
 type T_successResp<T> = {
   success: true;
@@ -12,19 +13,18 @@ type T_ErrResp = {
   errorMessage: string;
 };
 
+type T_FetchRecipesProps = {
+  query?: string;
+  cuisine?: string;
+  maxReadyTime?: string;
+};
 export const fetchRecipes = cache(
-  async ({
-    query = "",
-    cuisine = "",
-    maxReadyTime = "",
-  }): Promise<T_successResp<T_ApiResponse<T_RecipeShort>> | T_ErrResp> => {
+  async (
+    params: T_FetchRecipesProps
+  ): Promise<T_successResp<T_ApiResponse<T_RecipeShort>> | T_ErrResp> => {
     try {
-      const response = await axiosInstance.get("/recipes/complexSearch", {
-        params: {
-          query,
-          cuisine,
-          maxReadyTime,
-        },
+      const response = await axiosInstance.get("recipes/complexSearch", {
+        params: normalizeParams(params),
       });
 
       return {
