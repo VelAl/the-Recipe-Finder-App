@@ -1,4 +1,3 @@
-import axiosInstance from "@/lib/axios";
 import { fetchRecipes } from "@/lib/fetchData";
 import Image from "next/image";
 import Link from "next/link";

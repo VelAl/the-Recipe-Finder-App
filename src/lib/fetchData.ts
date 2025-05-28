@@ -1,10 +1,10 @@
 import { cache } from "react";
-import { T_ApiResponse, T_Dish } from "./app-types";
+import { T_ApiResponse, T_Recipe, T_RecipeShort } from "./app-types";
 import axiosInstance from "./axios";
 
-type T_successResp = {
+type T_successResp<T> = {
   success: true;
-  data: T_ApiResponse<T_Dish>;
+  data: T;
 };
 
 type T_ErrResp = {
@@ -17,7 +17,7 @@ export const fetchRecipes = cache(
     query = "",
     cuisine = "",
     maxReadyTime = "",
-  }): Promise<T_successResp | T_ErrResp> => {
+  }): Promise<T_successResp<T_ApiResponse<T_RecipeShort>> | T_ErrResp> => {
     try {
       const response = await axiosInstance.get("/recipes/complexSearch", {
         params: {
@@ -26,11 +26,11 @@ export const fetchRecipes = cache(
           maxReadyTime,
         },
       });
-      
+
       return {
         success: true,
         data: response.data,
-      } as T_successResp;
+      } as const;
     } catch (error: unknown) {
       console.error("Error fetching recipes:", error);
 
@@ -39,7 +39,30 @@ export const fetchRecipes = cache(
       return {
         success: false,
         errorMessage,
-      } as T_ErrResp;
+      } as const;
     }
   }
 );
+
+export const fetchRecipe = async (
+  id: string
+): Promise<T_successResp<T_Recipe> | T_ErrResp> => {
+  try {
+    const response = await axiosInstance.get(`recipes/${id}/information`);
+
+    return {
+      success: true,
+      data: response.data,
+    } as const;
+  } catch (error: unknown) {
+    console.error("Error fetching recipe:", error);
+
+    const errorMessage =
+      error instanceof Error ? error.message : "Failed to fetch recipe.";
+
+    return {
+      success: false,
+      errorMessage,
+    } as const;
+  }
+};
