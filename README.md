@@ -57,7 +57,7 @@ npm run dev
 
 Then open your browser and go to http://localhost:3000 to see the app in action.
 
-![App Screenshot 1](./screenshot_1.png)
-![App Screenshot 2](./screenshot_2.png)
-![App Screenshot 3](./screenshot_3.png)
-![App Screenshot 4](./screenshot_4.png)
+![App Screenshot 1](./public/screenshot_1.png)
+![App Screenshot 2](./public/screenshot_2.png)
+![App Screenshot 3](./public/screenshot_3.png)
+![App Screenshot 4](./public/screenshot_4.png)
